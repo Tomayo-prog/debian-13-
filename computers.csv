@@ -1,0 +1,24 @@
+Name;Fabricant;Modèle;N° de série;Utilisateur attribué;RAM (Go);Stockage (Go);Nombre de ports;Composants
+Ordinateur_portable-Louisa;;Mac Book R;FVFD4ASVMNHP;Louisa;;;;
+Ordinateur_portable-Driss;HP;;;Driss;;;;
+Ordinateur_portable-Sorya;Dell;;;Sorya;;;;
+Ordinateur_portable-Alex;;Mac Book Pro;C02GC1KFMD6R;Alex;32;512;4 USB-C 1 jack;2,4 GHz 8-Core Intel Core i9
+Ordinateur_portable-Déborah;HP;HP Pro Book 640 G2;5CG6430VN2;Déborah;32;932;1RJ45,2USB,1USBC,1HDMI,1AUX;
+Ordinateur_portable-Anthony; ;HP Note Book;CND4212987;Anthony;16;500;1RJ45,1HDMI,1USBC,2USB;12th Gen Intel(R) Core(TM) i3-1215U (1.20 GHz)
+Ordinateur_portable-Loic;Dell;;;Loic;;;;
+Ordinateur_portable-Romain;HP;PROBOOK;5CG9121CZB;Romain;32;1T;1RJ45, 3USB, 1USBC, 1AUX, 1SIM , 1VGA, 1 carte ;i5, 2RAMx16
+Ordinateur_portable-Elhoussayn;Lenovo;Lenovo Y540;PF1ZYHAM;Elhoussayn;16;1T500;3USB, 1AUX, 1RJ45, 1HDMI, 1USBC ;i5, GTX1650
+Ordinateur_portable-Rahul;Apple;Mac;;Rahul;8;250;2 usb-c;Quad-Core Intel Core i5
+Ordinateur_portable-Amel;Apple;Mac;CVVKJL7PKQ;Amel;8;245;2 usb-c;Puce M2
+Ordinateur_portable-Sandrine;Acer;Aspire A317-53;NXADOEF3230F4583400;Sandrine;8;500;3USB, 1HDMI, 1RJ45;i5
+Ordinateur_portable-Myke;Apple;Mac Book R;FVFZ77R2LYWK;Myke;8;256;2 USB-C 1 jack;1,6 GHz Intel Core i5 double cœur
+Ordinateur_portable-01;Dell;Latitude 7480;42LG5M2;;;;3 USB;
+Ordinateur_portable-02;Dell;Latitude7480;J4CH4M2;;;;3;
+Ordinateur_portable-03;Dell;Vostro;9MSZKR2;;;;3;
+Ordinateur_portable-04;Dell;Vostro;487ZKR2;;;;3;
+Ordinateur_portable-05;HP;ProBook 640 G2;5CG6430781;;;;2;
+Ordinateur_portable-06;HP;ProBook 640 G2;5CG6430205;;;;2;
+Ordinateur_portable-07;Lenovo;ideapad 320S;MP1BRN0R;;;;2;
+Ordinateur_portable-08;Dell;inspiron;4KPY7T2;;;;3;
+Ordinateur_portable-09;Dell;inspiron;DB508T2;;;;3;
+Ordinateur_portable-10;Dell;inspiron;D9WY7T2;;;;3;

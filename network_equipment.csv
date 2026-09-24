@@ -1,0 +1,6 @@
+Name;Fabricant;Modèle;N° de série;Nombre de ports
+Switch-01;Cisco;Cisco Catalyst 1300, switch manageable;PNV284518LX;1 RJ45 séparé,10 RJ45 DONT 2 SFP, 1 USB, 1 USB C, 
+Switch-02;D-LINK;DES-1016D;F30938C003009;16 RJ45
+Routeur-01;Cisco;cisco 880;FCZ1834932C;1 RNIS/ISDN, 1 WAN SHDSL, 4 RJ45, 1 AUX, 1 alim, 1 RJ45 PoE.
+Switch-03;Cisco;cisco 870;FHK114627HN;5 RJ45, 1 RJ11, 
+Équipement_réseau-01;Orange Busineess Services;appliance / MXPRu BIVC03;P20709237;"1VGA, 2 RJ45, 2 USB, & dc 12 V;"
