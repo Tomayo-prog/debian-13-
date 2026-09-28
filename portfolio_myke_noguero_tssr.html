@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myke Noguero | Portfolio TSSR - Technicien Supérieur Systèmes et Réseaux</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#00ff66',
+                            cyan: '#00f0ff',
+                            dark: '#0a0d14',
+                            card: 'rgba(15, 23, 42, 0.75)',
+                            border: 'rgba(0, 255, 102, 0.25)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 15px rgba(0,255,102,0.6))' },
+                            '50%': { opacity: 0.7, filter: 'drop-shadow(0 0 5px rgba(0,255,102,0.2))' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0d14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 102, 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff66;
+        }
+
+        /* Glassmorphism card styles */
+        .glass-panel {
+            background: rgba(13, 20, 32, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 102, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 255, 102, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(0, 255, 102, 0.1);
+        }
+
+        .neon-text-green {
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5), 0 0 20px rgba(0, 255, 102, 0.3);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .neon-border {
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+        }
+
+        /* Background Matrix Canvas */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        /* Terminal overlay effect */
+        .crt-overlay::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* Custom tab styles */
+        .tab-btn.active {
+            background-color: rgba(0, 255, 102, 0.15);
+            border-color: #00ff66;
+            color: #00ff66;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-slate-200 font-sans min-h-screen relative overflow-x-hidden crt-overlay">
+
+    <!-- Matrix Falling Code Background Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Main Wrapper Content (relative z-index to sit above matrix) -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- Header / Navigation -->
+        <header class="sticky top-0 z-50 glass-panel border-b border-emerald-900/40 bg-brand-dark/80 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                
+                <!-- Logo / Terminal title -->
+                <a href="#hero" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-950/80 border border-brand-green/40 flex items-center justify-center group-hover:border-brand-green transition-all shadow-[0_0_10px_rgba(0,255,102,0.2)]">
+                        <i class="fa-solid font-mono text-brand-green font-bold text-lg">&gt;_</i>
+                    </div>
+                    <div>
+                        <span class="font-mono text-lg font-bold text-white tracking-wider group-hover:text-brand-green transition-colors">
+                            MYKE<span class="text-brand-green">.NOGUERO</span>
+                        </span>
+                        <span class="block text-xs font-mono text-emerald-400/70">SYS_NET_ADMIN // TSSR</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1 font-mono text-sm">
+                    <a href="#profil" class="px-4 py-2 rounded-md hover:text-brand-green hover:bg-emerald-950/40 transition-all"><span class="text-brand-green mr-1">01.</span>Profil</a>
+                    <a href="#competences" class="px-4 py-2 rounded-md hover:text-brand-green hover:bg-emerald-950/40 transition-all"><span class="text-brand-green mr-1">02.</span>Compétences</a>
+                    <a href="#experiences" class="px-4 py-2 rounded-md hover:text-brand-green hover:bg-emerald-950/40 transition-all"><span class="text-brand-green mr-1">03.</span>Parcours</a>
+                    <a href="#formation" class="px-4 py-2 rounded-md hover:text-brand-green hover:bg-emerald-950/40 transition-all"><span class="text-brand-green mr-1">04.</span>Formations</a>
+                    <a href="#contact" class="px-4 py-2 rounded-md border border-brand-green/40 text-brand-green hover:bg-brand-green hover:text-black transition-all font-semibold ml-2 shadow-[0_0_10px_rgba(0,255,102,0.15)]">Contact</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-brand-green focus:outline-none p-2" aria-label="Toggle menu">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Dropdown Menu -->
+            <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-brand-green/20 px-4 pt-2 pb-6 space-y-3 font-mono text-sm">
+                <a href="#profil" class="block px-3 py-2 rounded-md hover:bg-emerald-950/60 text-slate-200 hover:text-brand-green"><span class="text-brand-green mr-2">01.</span>Profil</a>
+                <a href="#competences" class="block px-3 py-2 rounded-md hover:bg-emerald-950/60 text-slate-200 hover:text-brand-green"><span class="text-brand-green mr-2">02.</span>Compétences</a>
+                <a href="#experiences" class="block px-3 py-2 rounded-md hover:bg-emerald-950/60 text-slate-200 hover:text-brand-green"><span class="text-brand-green mr-2">03.</span>Parcours</a>
+                <a href="#formation" class="block px-3 py-2 rounded-md hover:bg-emerald-950/60 text-slate-200 hover:text-brand-green"><span class="text-brand-green mr-2">04.</span>Formations</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md bg-brand-green/10 border border-brand-green text-brand-green text-center font-bold">Contact</a>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-24">
+
+            <!-- SECTION HERO / IDENTITY -->
+            <section id="hero" class="pt-8 sm:pt-16 pb-8 min-h-[80vh] flex flex-col justify-center">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    
+                    <!-- Hero Info Text -->
+                    <div class="lg:col-span-8 space-y-6">
+                        
+                        <!-- Status Badge -->
+                        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-950/80 border border-brand-green/30 text-brand-green font-mono text-xs sm:text-sm">
+                            <span class="w-2.5 h-2.5 rounded-full bg-brand-green animate-ping"></span>
+                            <span>RECHERCHE DE STAGE INFORMATIQUE / SYSTEMES & RESEAUX</span>
+                        </div>
+
+                        <!-- Name Title -->
+                        <div>
+                            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
+                                Myke <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-green via-emerald-400 to-brand-cyan">Noguero</span>
+                            </h1>
+                            <p class="mt-2 text-xl sm:text-2xl font-mono text-brand-green font-semibold">
+                                &gt; Technicien Supérieur Systèmes et Réseaux (TSSR)
+                            </p>
+                            <p class="text-slate-400 font-mono text-sm mt-1">
+                                <i class="fa-solid fa-cake-candles text-brand-green mr-1"></i> 23 ans &nbsp;|&nbsp; 
+                                <i class="fa-solid fa-location-dot text-brand-green mr-1"></i> Béziers (34500), France
+                            </p>
+                        </div>
+
+                        <!-- Pitch / Summary -->
+                        <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl bg-slate-900/40 p-4 rounded-xl border border-slate-800 backdrop-blur-sm">
+                            Motivé, dynamique et sérieux, je suis actuellement en formation TSSR. Je recherche un <strong class="text-brand-green">stage en informatique</strong> afin de mettre en pratique mes connaissances en administration système, réseaux et support utilisateur, tout en apportant mon esprit d'équipe et mon adaptabilité.
+                        </p>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <a href="#contact" class="px-6 py-3 rounded-lg bg-brand-green hover:bg-emerald-400 text-slate-950 font-mono font-bold transition-all transform hover:-translate-y-0.5 shadow-[0_0_20px_rgba(0,255,102,0.4)] flex items-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Me Contacter</span>
+                            </a>
+                            <button onclick="window.print()" class="px-6 py-3 rounded-lg glass-panel text-slate-200 font-mono border border-brand-green/30 hover:border-brand-green hover:text-brand-green transition-all flex items-center space-x-2">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Exporter / Imprimer CV</span>
+                            </button>
+                            <a href="mailto:nogueromyke.pro@gmail.com" class="px-4 py-3 rounded-lg glass-panel text-slate-300 hover:text-brand-cyan transition-colors flex items-center justify-center" title="Email direct">
+                                <i class="fa-solid fa-envelope text-lg"></i>
+                            </a>
+                            <a href="tel:06352925 00" class="px-4 py-3 rounded-lg glass-panel text-slate-300 hover:text-brand-cyan transition-colors flex items-center justify-center" title="Appeler">
+                                <i class="fa-solid fa-phone text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Cyber Interactive Card / Terminal Widget -->
+                    <div class="lg:col-span-4">
+                        <div class="glass-panel rounded-2xl p-6 relative overflow-hidden border border-brand-green/30 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                            <!-- Header terminal window bar -->
+                            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 font-mono text-xs text-slate-400">
+                                <div class="flex space-x-2">
+                                    <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                                    <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                                    <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+                                </div>
+                                <span>bash - myke@tssr-node</span>
+                            </div>
+
+                            <!-- Terminal console prompt simulation -->
+                            <div class="font-mono text-xs space-y-3 leading-relaxed">
+                                <p class="text-slate-400"><span class="text-brand-green">myke@tssr-node:~$</span> cat status.json</p>
+                                <div class="p-3 bg-slate-950/80 rounded border border-slate-800 text-slate-300 space-y-1">
+                                    <p><span class="text-brand-cyan">"statut":</span> <span class="text-emerald-400">"En formation TSSR"</span>,</p>
+                                    <p><span class="text-brand-cyan">"disponibilite":</span> <span class="text-yellow-400">"Immédiate pour stage"</span>,</p>
+                                    <p><span class="text-brand-cyan">"mobilite":</span> <span class="text-emerald-400">"Béziers & Région"</span>,</p>
+                                    <p><span class="text-brand-cyan">"soft_skills":</span> [<span class="text-emerald-300">"Adaptabilité"</span>, <span class="text-emerald-300">"Relationnel"</span>, <span class="text-emerald-300">"Sens de l'accueil"</span>]</p>
+                                </div>
+
+                                <p class="text-slate-400"><span class="text-brand-green">myke@tssr-node:~$</span> ping -c 1 contact</p>
+                                <p class="text-emerald-400">64 bytes from nogueromyke.pro: icmp_seq=1 ttl=64 time=0.042 ms</p>
+                                
+                                <p class="text-slate-400"><span class="text-brand-green">myke@tssr-node:~$</span> <span class="animate-pulse">_</span></p>
+                            </div>
+
+                            <!-- Network status footer icon -->
+                            <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-slate-400">
+                                <span class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-wifi text-brand-green"></i>
+                                    <span>Réseau Opérationnel</span>
+                                </span>
+                                <span class="text-emerald-400 font-bold">100% Motivé</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 1: À PROPOS & PROFIL -->
+            <section id="profil" class="scroll-mt-24">
+                <div class="flex items-center space-x-3 mb-8">
+                    <span class="text-brand-green font-mono text-xl font-bold">01.</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Profil & Objectifs</h2>
+                    <div class="h-px bg-slate-800 flex-grow ml-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1: Formation actuelle -->
+                    <div class="glass-panel rounded-xl p-6 relative group transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-950/60 border border-brand-green/30 flex items-center justify-center text-brand-green text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 font-mono">Administration & Réseaux</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Formé aux compétences clés du titre TSSR : configuration d'équipements réseaux, gestion des accès, maintenance système et déploiement d'infrastructures informatiques.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Polyvalence & Relationnel -->
+                    <div class="glass-panel rounded-xl p-6 relative group transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-950/60 border border-brand-green/30 flex items-center justify-center text-brand-green text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 font-mono">Sens du Contact & Helpdesk</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Fort de riches expériences en hôtellerie et service au public (Erasmus+, accueil client), je possède une excellente communication pour le support utilisateur et la gestion d'incidents.
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Ouverture Internationale & Mobilité -->
+                    <div class="glass-panel rounded-xl p-6 relative group transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-950/60 border border-brand-green/30 flex items-center justify-center text-brand-green text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-globe"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 font-mono">Expérience Internationale</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Missions réussies en Allemagne, Italie et Macédoine du Nord (volontariat & Erasmus+). Capacité prouvée à m'adapter rapidement à de nouveaux environnements de travail.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: COMPÉTENCES & QUALITÉS -->
+            <section id="competences" class="scroll-mt-24">
+                <div class="flex items-center space-x-3 mb-8">
+                    <span class="text-brand-green font-mono text-xl font-bold">02.</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Compétences & Atouts</h2>
+                    <div class="h-px bg-slate-800 flex-grow ml-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Technical & Administrative Skills -->
+                    <div class="lg:col-span-7 glass-panel rounded-2xl p-6 sm:p-8">
+                        <h3 class="text-xl font-bold text-white font-mono mb-6 flex items-center">
+                            <i class="fa-solid fa-microchip text-brand-green mr-3"></i>
+                            Savoir-faire Technique & Gestion
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            
+                            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-brand-green/40 transition-all">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <i class="fa-solid fa-server text-brand-green"></i>
+                                    <h4 class="font-bold text-slate-200">Systèmes & Réseaux</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Formation TSSR : notions réseaux, maintenance parc matériel, assistance technique.</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-brand-green/40 transition-all">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <i class="fa-solid fa-folder-tree text-brand-green"></i>
+                                    <h4 class="font-bold text-slate-200">Gestion des Dossiers</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Suivi administratif rigoureux, gestion du processus d'admission et facturation.</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-brand-green/40 transition-all">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <i class="fa-solid fa-laptop-code text-brand-green"></i>
+                                    <h4 class="font-bold text-slate-200">Logiciels Spécifiques</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Logiciels de gestion hôtelière et outils bureautiques informatiques.</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-brand-green/40 transition-all">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <i class="fa-solid fa-calculator text-brand-green"></i>
+                                    <h4 class="font-bold text-slate-200">Caisse & Encaissement</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Gestion comptable de premier niveau, encaissement rapide et fiable.</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-brand-green/40 transition-all sm:col-span-2">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <i class="fa-solid fa-users text-brand-green"></i>
+                                    <h4 class="font-bold text-slate-200">Sens de l'accueil & Relation Client</h4>
+                                </div>
+                                <p class="text-xs text-slate-400">Accueil du public, écoute active, diplomatie et gestion de la satisfaction client.</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Personal Qualities & Soft Skills -->
+                    <div class="lg:col-span-5 glass-panel rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white font-mono mb-6 flex items-center">
+                                <i class="fa-solid fa-star text-brand-green mr-3"></i>
+                                Qualités Personnelles
+                            </h3>
+
+                            <div class="space-y-3 font-mono">
+                                <div class="flex items-center p-3 rounded-lg bg-emerald-950/30 border border-brand-green/20">
+                                    <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                    <span class="text-slate-200 text-sm font-semibold">Créativité</span>
+                                </div>
+                                <div class="flex items-center p-3 rounded-lg bg-emerald-950/30 border border-brand-green/20">
+                                    <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                    <span class="text-slate-200 text-sm font-semibold">Capacité d'adaptation</span>
+                                </div>
+                                <div class="flex items-center p-3 rounded-lg bg-emerald-950/30 border border-brand-green/20">
+                                    <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                    <span class="text-slate-200 text-sm font-semibold">Excellentes compétences relationnelles</span>
+                                </div>
+                                <div class="flex items-center p-3 rounded-lg bg-emerald-950/30 border border-brand-green/20">
+                                    <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                    <span class="text-slate-200 text-sm font-semibold">Esprit d'équipe & Écoute</span>
+                                </div>
+                                <div class="flex items-center p-3 rounded-lg bg-emerald-950/30 border border-brand-green/20">
+                                    <i class="fa-solid fa-check-circle text-brand-green mr-3"></i>
+                                    <span class="text-slate-200 text-sm font-semibold">Autonomie & Dynamisme</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Languages sub-box -->
+                        <div class="mt-8 pt-6 border-t border-slate-800">
+                            <h4 class="font-mono text-sm font-bold text-brand-green mb-3 uppercase tracking-wider">
+                                <i class="fa-solid fa-language mr-2"></i>Langues pratiquées
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 rounded-md bg-slate-900 border border-slate-700 text-xs font-mono text-slate-200">
+                                    Français : <strong class="text-brand-green">Langue maternelle</strong>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-md bg-slate-900 border border-slate-700 text-xs font-mono text-slate-200">
+                                    Anglais : <strong class="text-brand-green">Professionnel / B2</strong>
+                                </span>
+                                <span class="px-3 py-1.5 rounded-md bg-slate-900 border border-slate-700 text-xs font-mono text-slate-200">
+                                    Allemand : <strong class="text-slate-400">Niveau A1</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 3: PARCOURS PROFESSIONNEL -->
+            <section id="experiences" class="scroll-mt-24">
+                <div class="flex items-center space-x-3 mb-8">
+                    <span class="text-brand-green font-mono text-xl font-bold">03.</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Expériences Professionnelles</h2>
+                    <div class="h-px bg-slate-800 flex-grow ml-4"></div>
+                </div>
+
+                <!-- Timeline Container -->
+                <div class="relative border-l-2 border-brand-green/30 ml-4 sm:ml-8 pl-6 sm:pl-10 space-y-10">
+
+                    <!-- Exp 1: KRIK Center -->
+                    <div class="relative group">
+                        <!-- Bullet point icon -->
+                        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-brand-dark border-2 border-brand-green text-brand-green flex items-center justify-center text-xs group-hover:scale-125 group-hover:bg-brand-green group-hover:text-black transition-all">
+                            <i class="fa-solid fa-hands-holding-child text-[10px]"></i>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-bold text-white font-mono">
+                                    Volontariat - Accompagnement & Animation
+                                </h3>
+                                <span class="px-3 py-1 rounded-full bg-emerald-950/80 border border-brand-green/30 text-brand-green font-mono text-xs w-fit">
+                                    Janvier - Mars 2026
+                                </span>
+                            </div>
+                            <p class="text-brand-cyan text-sm font-mono mb-3">
+                                <i class="fa-solid fa-building mr-1"></i> KRIK Center — Skopje, Macédoine du Nord
+                            </p>
+                            <ul class="list-disc list-inside text-slate-300 text-sm space-y-1">
+                                <li>Accompagnement personnalisé de personnes en situation de handicap.</li>
+                                <li>Conception et animation d'activités éducatives, sociales et d'intégration.</li>
+                                <li>Développement fort du sens de l'empathie, de la patience et du travail d'équipe international.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Exp 2: Restaurant La Mirabelle Leipzig -->
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-brand-dark border-2 border-brand-green text-brand-green flex items-center justify-center text-xs group-hover:scale-125 group-hover:bg-brand-green group-hover:text-black transition-all">
+                            <i class="fa-solid fa-utensils text-[10px]"></i>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-bold text-white font-mono">
+                                    Saisonnier - Service & Prise de commande
+                                </h3>
+                                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-mono text-xs w-fit">
+                                    05/2025 - 08/2025 (CDD)
+                                </span>
+                            </div>
+                            <p class="text-brand-cyan text-sm font-mono mb-3">
+                                <i class="fa-solid fa-location-dot mr-1"></i> Restaurant La Mirabelle — Leipzig, Allemagne
+                            </p>
+                            <p class="text-slate-300 text-sm">
+                                Service à table, accueil de la clientèle internationale, gestion du rythme en période de forte affluence et pratique de la langue allemande/anglaise.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Exp 3: Hôtel California -->
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-brand-dark border-2 border-brand-green text-brand-green flex items-center justify-center text-xs group-hover:scale-125 group-hover:bg-brand-green group-hover:text-black transition-all">
+                            <i class="fa-solid fa-hotel text-[10px]"></i>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-bold text-white font-mono">
+                                    Stagiaire Réceptionniste
+                                </h3>
+                                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-mono text-xs w-fit">
+                                    Janvier 2025
+                                </span>
+                            </div>
+                            <p class="text-brand-cyan text-sm font-mono mb-3">
+                                <i class="fa-solid fa-hotel mr-1"></i> Hôtel California
+                            </p>
+                            <p class="text-slate-300 text-sm">
+                                Gestion intégrale des processus d'admission des clients (check-in / check-out), utilisation de logiciels de gestion et facturation des séjours.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Exp 4: Erasmus+ Genova -->
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-brand-dark border-2 border-brand-green text-brand-green flex items-center justify-center text-xs group-hover:scale-125 group-hover:bg-brand-green group-hover:text-black transition-all">
+                            <i class="fa-solid fa-plane text-[10px]"></i>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-bold text-white font-mono">
+                                    Erasmus+ — Stagiaire Réceptionniste
+                                </h3>
+                                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-mono text-xs w-fit">
+                                    11/2024
+                                </span>
+                            </div>
+                            <p class="text-brand-cyan text-sm font-mono mb-3">
+                                <i class="fa-solid fa-bed mr-1"></i> Ostello Bello — Genova, Italie
+                            </p>
+                            <p class="text-slate-300 text-sm">
+                                Stage international : gestion des admissions clients, support multilingue et traitement de la facturation des séjours dans une structure dynamique.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Exp 5: Service Civique École Les Tamaris -->
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-brand-dark border-2 border-brand-green text-brand-green flex items-center justify-center text-xs group-hover:scale-125 group-hover:bg-brand-green group-hover:text-black transition-all">
+                            <i class="fa-solid fa-graduation-cap text-[10px]"></i>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-bold text-white font-mono">
+                                    Service Civique — Accompagnement Éducatif
+                                </h3>
+                                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-mono text-xs w-fit">
+                                    11/2023 - 06/2024
+                                </span>
+                            </div>
+                            <p class="text-brand-cyan text-sm font-mono mb-3">
+                                <i class="fa-solid fa-school mr-1"></i> École Les Tamaris — Béziers (CDD)
+                            </p>
+                            <p class="text-slate-300 text-sm">
+                                Aide à la compréhension des consignes, pédagogie et soutien dans la réalisation des tâches scolaires auprès des enfants.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Exp 6: La Raffinerie Béziers -->
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-brand-dark border-2 border-brand-green text-brand-green flex items-center justify-center text-xs group-hover:scale-125 group-hover:bg-brand-green group-hover:text-black transition-all">
+                            <i class="fa-solid fa-cocktail text-[10px]"></i>
+                        </div>
+                        
+                        <div class="glass-panel rounded-xl p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-bold text-white font-mono">
+                                    Saisonnier — Service & Préparation de Cocktails
+                                </h3>
+                                <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-mono text-xs w-fit">
+                                    Saisons 2022 & 2023 (Juillet - Août)
+                                </span>
+                            </div>
+                            <p class="text-brand-cyan text-sm font-mono mb-3">
+                                <i class="fa-solid fa-wine-glass mr-1"></i> Restaurant La Raffinerie — Béziers
+                            </p>
+                            <p class="text-slate-300 text-sm">
+                                Service à table exigeant, préparation de cocktails, encaissement et travail d'équipe sous forte affluence estivale.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 4: FORMATIONS & DIPLÔMES -->
+            <section id="formation" class="scroll-mt-24">
+                <div class="flex items-center space-x-3 mb-8">
+                    <span class="text-brand-green font-mono text-xl font-bold">04.</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Formations & Diplômes</h2>
+                    <div class="h-px bg-slate-800 flex-grow ml-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Formation 1: TSSR -->
+                    <div class="glass-panel rounded-2xl p-6 sm:p-8 border-l-4 border-l-brand-green relative overflow-hidden">
+                        <div class="absolute top-4 right-4 text-emerald-950 text-6xl font-mono font-bold opacity-40 pointer-events-none">
+                            TSSR
+                        </div>
+                        <span class="inline-block px-3 py-1 rounded bg-brand-green/20 text-brand-green font-mono text-xs font-bold mb-3">
+                            EN COURS DE FORMATION
+                        </span>
+                        <h3 class="text-xl font-bold text-white mb-2">
+                            Titre Professionnel TSSR
+                        </h3>
+                        <p class="text-brand-cyan font-mono text-sm mb-4">
+                            Technicien Supérieur Systèmes et Réseaux (Niveau 5 / Bac+2)
+                        </p>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Compétences visées : Administrer et sécuriser les infrastructures réseaux, assister les utilisateurs, déployer des serveurs et gérer le parc informatique de l'entreprise.
+                        </p>
+                        <div class="flex items-center space-x-2 text-xs font-mono text-brand-green">
+                            <i class="fa-solid fa-bullseye"></i>
+                            <span>Objectif : Recherche de stage de validation</span>
+                        </div>
+                    </div>
+
+                    <!-- Formation 2: Bac Pro -->
+                    <div class="glass-panel rounded-2xl p-6 sm:p-8 border-l-4 border-l-slate-600 relative overflow-hidden">
+                        <div class="absolute top-4 right-4 text-slate-800 text-6xl font-mono font-bold opacity-30 pointer-events-none">
+                            BAC
+                        </div>
+                        <span class="inline-block px-3 py-1 rounded bg-slate-800 text-slate-300 font-mono text-xs font-bold mb-3">
+                            DIPLÔME OBTENU
+                        </span>
+                        <h3 class="text-xl font-bold text-white mb-2">
+                            Baccalauréat Professionnel
+                        </h3>
+                        <p class="text-brand-cyan font-mono text-sm mb-4">
+                            Hôtellerie Restauration
+                        </p>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Lycée Polyvalent Jean Moulin — Béziers. Formation axée sur la rigueur, le sens de la relation client, l'organisation et le travail d'équipe.
+                        </p>
+                        <div class="flex items-center space-x-2 text-xs font-mono text-slate-400">
+                            <i class="fa-solid fa-school"></i>
+                            <span>Béziers, France</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 5: CONTACT & ACTIONS RAPIDES -->
+            <section id="contact" class="scroll-mt-24 pb-12">
+                <div class="flex items-center space-x-3 mb-8">
+                    <span class="text-brand-green font-mono text-xl font-bold">05.</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Me Contacter</h2>
+                    <div class="h-px bg-slate-800 flex-grow ml-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Direct Contact Cards -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="glass-panel rounded-2xl p-6">
+                            <h3 class="text-lg font-bold text-white font-mono mb-4">Coordonnées Directes</h3>
+                            
+                            <div class="space-y-4 text-sm font-mono">
+                                <a href="tel:0635292500" class="flex items-center space-x-4 p-3 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-brand-green text-slate-200 hover:text-brand-green transition-all">
+                                    <div class="w-10 h-10 rounded-md bg-emerald-950/80 text-brand-green flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-slate-400 block">Téléphone</span>
+                                        <span class="font-bold">06 35 29 25 00</span>
+                                    </div>
+                                </a>
+
+                                <a href="mailto:nogueromyke.pro@gmail.com" class="flex items-center space-x-4 p-3 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-brand-green text-slate-200 hover:text-brand-green transition-all">
+                                    <div class="w-10 h-10 rounded-md bg-emerald-950/80 text-brand-green flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <span class="text-xs text-slate-400 block">Email Professionnel</span>
+                                        <span class="font-bold text-xs sm:text-sm truncate block">nogueromyke.pro@gmail.com</span>
+                                    </div>
+                                </a>
+
+                                <div class="flex items-center space-x-4 p-3 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-200">
+                                    <div class="w-10 h-10 rounded-md bg-emerald-950/80 text-brand-green flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-slate-400 block">Adresse</span>
+                                        <span class="font-bold">15 rue de Bastit, 34500 Béziers</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t border-slate-800">
+                                <button onclick="window.print()" class="w-full py-3 rounded-lg bg-emerald-950/60 border border-brand-green/40 hover:bg-brand-green hover:text-black font-mono text-sm font-bold text-brand-green transition-all flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <span>Télécharger / Imprimer CV (PDF)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Contact Form -->
+                    <div class="lg:col-span-7">
+                        <div class="glass-panel rounded-2xl p-6 sm:p-8">
+                            <h3 class="text-lg font-bold text-white font-mono mb-2">Envoyer un Message</h3>
+                            <p class="text-xs text-slate-400 font-mono mb-6">Proposer un stage ou prendre contact directement.</p>
+
+                            <form id="contact-form" class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-mono text-slate-300 mb-1">Nom / Entreprise</label>
+                                        <input type="text" required placeholder="Votre nom" class="w-full px-4 py-2.5 rounded-lg bg-slate-950/80 border border-slate-800 focus:border-brand-green text-white font-mono text-sm focus:outline-none transition-colors">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-mono text-slate-300 mb-1">Email</label>
+                                        <input type="email" required placeholder="votre.email@domaine.com" class="w-full px-4 py-2.5 rounded-lg bg-slate-950/80 border border-slate-800 focus:border-brand-green text-white font-mono text-sm focus:outline-none transition-colors">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-300 mb-1">Sujet</label>
+                                    <input type="text" required placeholder="Proposition de stage TSSR / Prise de contact" class="w-full px-4 py-2.5 rounded-lg bg-slate-950/80 border border-slate-800 focus:border-brand-green text-white font-mono text-sm focus:outline-none transition-colors">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-300 mb-1">Message</label>
+                                    <textarea rows="4" required placeholder="Bonjour Myke, nous serions intéressés par votre profil..." class="w-full px-4 py-2.5 rounded-lg bg-slate-950/80 border border-slate-800 focus:border-brand-green text-white font-mono text-sm focus:outline-none transition-colors"></textarea>
+                                </div>
+
+                                <button type="submit" class="w-full py-3 rounded-lg bg-brand-green hover:bg-emerald-400 text-slate-950 font-mono font-bold transition-all shadow-[0_0_15px_rgba(0,255,102,0.3)] flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>Envoyer le Message</span>
+                                </button>
+                            </form>
+
+                            <!-- Alert Box for submission (replaces browser alert) -->
+                            <div id="form-alert" class="hidden mt-4 p-4 rounded-lg bg-emerald-950/90 border border-brand-green text-brand-green text-xs font-mono">
+                                <i class="fa-solid fa-circle-check mr-2"></i>
+                                Message simulé avec succès ! Je vous répondrai dans les plus brefs délais à l'adresse indiquée.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-900 bg-brand-dark/90 backdrop-blur-md py-6 text-center text-xs font-mono text-slate-500 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p>© 2026 Myke Noguero. Tous droits réservés.</p>
+                <p class="text-slate-400">
+                    <span class="text-brand-green">&gt;_</span> Portfolio TSSR — Technicien Supérieur Systèmes et Réseaux
+                </p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Logic & Matrix Rain Canvas Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Matrix Digital Rain Effect ---
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Matrix characters (Katakana + Latin + Binary + Network terms)
+            const chars = '010101010101TSSRNETWORKSYSADMINPINGIPCONFIGSSTPSHLINUX89ABCDEFｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘ';
+            const fontSize = 14;
+            let columns = Math.floor(canvas.width / fontSize);
+            let drops = [];
+
+            function initDrops() {
+                columns = Math.floor(canvas.width / fontSize);
+                drops = [];
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = Math.random() * -100;
+                }
+            }
+            initDrops();
+            window.addEventListener('resize', initDrops);
+
+            function drawMatrix() {
+                // Semi-transparent black background to create trail effect
+                ctx.fillStyle = 'rgba(10, 13, 20, 0.08)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.font = fontSize + 'px "Fira Code", monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                    
+                    // Highlight head of rain drops with bright white/cyan, body with green
+                    if (Math.random() > 0.92) {
+                        ctx.fillStyle = '#00f0ff'; // glowing cyan head
+                    } else {
+                        ctx.fillStyle = '#00ff66'; // brand green
+                    }
+
+                    const x = i * fontSize;
+                    const y = drops[i] * fontSize;
+
+                    ctx.fillText(text, x, y);
+
+                    // Reset drop to top randomly after reaching bottom
+                    if (y > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+
+            // Animation Loop
+            let animationFrameId;
+            function animate() {
+                drawMatrix();
+                setTimeout(() => {
+                    animationFrameId = requestAnimationFrame(animate);
+                }, 40); // Controlled speed
+            }
+            animate();
+
+            // --- 2. Mobile Nav Menu Toggle ---
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // --- 3. Simulated Contact Form Handler ---
+            const form = document.getElementById('contact-form');
+            const alertBox = document.getElementById('form-alert');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alertBox.classList.remove('hidden');
+                form.reset();
+                setTimeout(() => {
+                    alertBox.classList.add('hidden');
+                }, 6000);
+            });
+        });
+    </script>
+</body>
+</html>
